@@ -26,13 +26,9 @@ function Main {
     # Calculate statistics
     $todayKey = $key.Substring(0, 6)
     $today = $db.GetEnumerator() | Where-Object { $_.Key.StartsWith($todayKey) } | Measure-Object Value -Average -Maximum
-    $yesterdayKey = (Get-DateKey (Get-Date).AddDays(-1)).Substring(0, 6)
-    $yesterday = $db.GetEnumerator() | Where-Object { $_.Key.StartsWith($yesterdayKey) } | Measure-Object Value -Average -Maximum
 
     $monthKey = $key.Substring(0, 4)
     $month = $db.GetEnumerator() | Where-Object { $_.Key.StartsWith($monthKey) } | Measure-Object Value -Average -Maximum
-    $lastMonthKey = (Get-DateKey (Get-Date).AddMonths(-1)).Substring(0, 4)
-    $lastMonth = $db.GetEnumerator() | Where-Object { $_.Key.StartsWith($lastMonthKey) } | Measure-Object Value -Average -Maximum
 
     $yearKey = $key.Substring(0, 2)
     $year = $db.GetEnumerator() | Where-Object { $_.Key.StartsWith($yearKey) } | Measure-Object Value -Average -Maximum
@@ -53,13 +49,13 @@ function Main {
     $output += "Total      " + $total + [environment]::NewLine
     $output += "" + [environment]::NewLine
     $output += "# Maximum players online" + [environment]::NewLine
-    $output += "Today      " + [math]::Round($today.Maximum, 2) + " (" + [math]::Round(($today.Maximum - $yesterday.Maximum) / $yesterday.Maximum * 100) + "%)" + [environment]::NewLine
-    $output += "This month " + [math]::Round($month.Maximum, 2) + " (" + [math]::Round(($month.Maximum - $lastMonth.Maximum) / $lastMonth.Maximum * 100) + "%)" + [environment]::NewLine
+    $output += "Today      " + [math]::Round($today.Maximum, 2) + " (" + [math]::Round(($today.Maximum - $month.Maximum) / $month.Maximum * 100) + "%)" + [environment]::NewLine
+    $output += "This month " + [math]::Round($month.Maximum, 2) + " (" + [math]::Round(($month.Maximum - $year.Maximum) / $year.Maximum * 100) + "%)" + [environment]::NewLine
     $output += "This year  " + [math]::Round($year.Maximum , 2) + " (" + [math]::Round(($year.Maximum - $lastYear.Maximum) / $lastYear.Maximum * 100) + "%)" + [environment]::NewLine
     $output += "" + [environment]::NewLine
     $output += "# Average players online" + [environment]::NewLine
-    $output += "Today      " + [math]::Round($today.Average, 2) + " (" + [math]::Round(($today.Average - $yesterday.Average) / $yesterday.Average * 100) + "%)" + [environment]::NewLine
-    $output += "This month " + [math]::Round($month.Average, 2) + " (" + [math]::Round(($month.Average - $lastMonth.Average) / $lastMonth.Average * 100) + "%)" + [environment]::NewLine
+    $output += "Today      " + [math]::Round($today.Average, 2) + " (" + [math]::Round(($today.Average - $month.Average) / $month.Average * 100) + "%)" + [environment]::NewLine
+    $output += "This month " + [math]::Round($month.Average, 2) + " (" + [math]::Round(($month.Average - $year.Average) / $year.Average * 100) + "%)" + [environment]::NewLine
     $output += "This year  " + [math]::Round($year.Average , 2) + " (" + [math]::Round(($year.Average - $lastYear.Average) / $lastYear.Average * 100) + "%)" + [environment]::NewLine
 
     $output | Out-File UserStats.txt
